@@ -1,5 +1,3 @@
-
-
 clear all;
 clc;
 syms ac pwbcx psbwx dpwcb f tf u ux0 uy0 uz0  uxf uyf uzf dpwb Re tw jerk psvb df  ctx dx pwbcy dotv T dotw dpsv dpsw psbwy cty dy pwbcz psbwz ctz dz vabx vaby vabz bx by bz pv dpv dpsv r ga gaw psw pwbx pwby pwbz psvby psvbx psvbz cdy cdz cdx ax ay az hw ew dpsw esw psv v h ev yaw pitch roll dv x y z m tau_x tau_y tau_z ctx cty ctz wb Rb wbx wby wbz vbx vby vbz cdx cdy cdz vb n dcd dct e3 fd dw sv Xw g esv esw Re wx wy wz ct vx vy vz ft w p q r ew j j1 j2 j3 i wm sw om n jm tau tau_d fi
@@ -215,8 +213,9 @@ gset= [gx; gy; gz];
 
 %---Random waypoints
 
-p =  floor((rand (15,3))*100);
-% plot3(p(:,1),p(:,2),p(:,3),'o')
+p =  floor((rand (8,3))*100);
+
+
     dx = sym('dx',[3 1])
 
 %-------------------- Vmax
@@ -228,7 +227,7 @@ Vmax = 10;
 syms tgo 
 % distant measurement---------------
 i = 0;
-for n = 2:15
+for n = 2:8
     i = i+1;
     d(i) = norm (p(n,:) - p(n-1,:));
     tgo = d / Vmax
@@ -315,7 +314,11 @@ next_r(i,1:3) = [dxx(i) dyx(i) dzx(i)]
 next_v(i,1:3) = [dxv(i) dyv(i) dzv(i)];
 next_a(i,1:3) = [dxa(i) dya(i) dza(i)];
 %plot3(next_r,'o')
+figure(1)
+plot3(p(:,1),p(:,2),p(:,3),'-')
+figure(2)
  plot3(next_r(:,1),next_r(:,2),next_r(:,3),'-')
+ 
 %gset= [gx; gy; gz];
    end
 %p =  floor((rand (15,3))*100);
