@@ -214,9 +214,9 @@ gset= [gx; gy; gz];
 
 %---Random waypoints
 %p =  floor((rand (8,3))*100);
-p1 = [0 0 0]
-p2 = [1 1 1]
-p3 = [2 4 5]
+p1 = [1 2 2]
+p2 = [3 4 4]
+p3 = [3 4 5]
 p4 = [4 5 6]
 p5 = [3 5 6]
 p6 = [3 8 6]
@@ -247,7 +247,13 @@ for n = 2:13
     tgo = d(i) / Vmax
     tf = tgo;
 pox(i)= p(n-1,1);
-vox(i) =0;
+
+if  i == 1
+    vox (i) = 0;
+else
+vox(i) = vfx((i)-1);
+end
+
 if  i == 1
     aox (i) = 0;
 else
@@ -255,20 +261,36 @@ aox(i) = afx((i)-1);
 end
 pfx(i) = p(n,1);
 vfx(i) = ((pox(i)/pfx(i))/tf);
+if i==12
+    afx(i) = 0;
+else 
 afx(i)= ((vox(i)/vfx(i))/tf);
+end
 poy(i)= p(n-1,2);
-voy(i) =0;
 if  i == 1
-aoy (i) == 0;
+    voy (i) = 0;
+else
+voy(i) = vfy((i)-1);
+end
+if  i == 1
+aoy (i) = 0;
 else
     aoy(i) = afy((i)-1);
 end
 
 pfy(i) = p(n,2);
 vfy(i) = ((poy(i)/pfy(i))/tf);
-afy(i) = ((voy(i)/vfy(i))/tf);
+if i==12
+    afy(i) = 0;
+else 
+afy(i)= ((voy(i)/vfy(i))/tf);
+end
 poz(i)= p(n-1,3);
-voz(i) =0;
+if  i == 1
+    voz (i) = 0;
+else
+voz (i) = vfz((i)-1);
+end
 
 if i == 1
 aoz(i) = 0;
@@ -276,7 +298,11 @@ aoz(i) = 0;
 end 
 pfz(i) = p(n,3);
 vfz(i) = ((poz(i)/pfz(i))/tf);
-afz(i) = ((voz(i)/vfz(i))/tf);
+if i==12
+    afz(i) = 0;
+else 
+afz(i)= ((voz(i)/vfz(i))/tf);
+end
 
 %-- x coordinate
 dpx(i) = pfx(i)-pox(i)-(vox(i)*tf)-(1/2*aox(i)*tf^2);
@@ -345,7 +371,7 @@ figure(1)
 plot3(p(:,1),p(:,2),p(:,3),'-')
 figure(2)
  plot3(next_r(:,1),next_r(:,2),next_r(:,3),'-')
- 
+ n = n+1;
 %gset= [gx; gy; gz];
    end
 %p =  floor((rand (15,3))*100);
