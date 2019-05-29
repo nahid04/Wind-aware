@@ -237,33 +237,46 @@ p = [p1;p2;p3;p4;p5;p6;p7;p8;p9;p10;p11;p12;p13]
 %inverse_diagonal = [1/(cd*(ft/m)*(e3) + (Re*g)) 0 0; 0 (1/(cd*(ft/m)*(e3) + (Re*g))) 0; 0 0 (1/(cd*(ft/m)*(e3) + (Re*g)))]
 %maximum_value = ([[1 1 1]' * (abs(inverse_diagonal))])
 %(Vmax)^2 = max ([[1 1 1]' * (abs(inverse_diagonal))])
-Vmax = 10;
+Vmax = 6;
 syms tgo 
 % distant measurement---------------
 i = 0;
-for n = 2:8
+for n = 2:13
     i = i+1;
     d(i) = norm (p(n,:) - p(n-1,:));
-    tgo = d / Vmax
-    tf = tgo(i);
+    tgo = d(i) / Vmax
+    tf = tgo;
 pox(i)= p(n-1,1);
-vox(i) =1;
-aox(i) =1;
+vox(i) =0;
+if  i == 1
+    aox (i) = 0;
+else
+aox(i) = afx((i)-1);
+end
 pfx(i) = p(n,1);
-vfx(i) = 1;
-afx(i)= 0;
+vfx(i) = ((pox(i)/pfx(i))/tf);
+afx(i)= ((vox(i)/vfx(i))/tf);
 poy(i)= p(n-1,2);
-voy(i) =1;
-aoy(i) =1;
+voy(i) =0;
+if  i == 1
+aoy (i) == 0;
+else
+    aoy(i) = afy((i)-1);
+end
+
 pfy(i) = p(n,2);
-vfy(i) = 1;
-afy(i) = 0;
+vfy(i) = ((poy(i)/pfy(i))/tf);
+afy(i) = ((voy(i)/vfy(i))/tf);
 poz(i)= p(n-1,3);
-voz(i) =1;
-aoz(i) =1;
+voz(i) =0;
+
+if i == 1
+aoz(i) = 0;
+    else aoz(i) =afz((i)-1);
+end 
 pfz(i) = p(n,3);
-vfz(i) = 1;
-afz(i) = 0;
+vfz(i) = ((poz(i)/pfz(i))/tf);
+afz(i) = ((voz(i)/vfz(i))/tf);
 
 %-- x coordinate
 dpx(i) = pfx(i)-pox(i)-(vox(i)*tf)-(1/2*aox(i)*tf^2);
