@@ -1,8 +1,6 @@
-
-
 clear all;
 clc;
-syms ac pwbcx psbwx dpwcb f tf u ux0 uy0 uz0  uxf uyf uzf dpwb Re tw jerk psvb df  ctx dx pwbcy dotv T dotw dpsv dpsw psbwy cty dy pwbcz psbwz ctz dz vabx vaby vabz bx by bz pv dpv dpsv r ga gaw psw pwbx pwby pwbz psvby psvbx psvbz cdy cdz cdx ax ay az hw ew dpsw esw psv v h ev yaw pitch roll dv x y z m tau_x tau_y tau_z ctx cty ctz wb Rb wbx wby wbz vbx vby vbz cdx cdy cdz vb n dcd dct e3 fd dw sv Xw g esv esw Re wx wy wz ct vx vy vz ft w p q r ew j j1 j2 j3 i wm sw om n jm tau tau_d fi
+syms om1 om2 om3 om4 wr1 wr2 wr3 ac pwbcx psbwx dpwcb f tf u ux0 uy0 uz0  uxf uyf uzf dpwb Re tw jerk psvb df  ctx dx pwbcy dotv T dotw dpsv dpsw psbwy cty dy pwbcz psbwz ctz dz vabx vaby vabz bx by bz pv dpv dpsv r ga gaw psw pwbx pwby pwbz psvby psvbx psvbz cdy cdz cdx ax ay az hw ew dpsw esw psv v h ev yaw pitch roll dv x y z m tau_x tau_y tau_z ctx cty ctz wb Rb wbx wby wbz vbx vby vbz cdx cdy cdz vb n dcd dct e3 fd dw sv Xw g esv esw Re wx wy wz ct vx vy vz ft w p q r ew j j1 j2 j3 i wm sw om n jm tau tau_d fi
 syms performance_index gx gy gz dx dy dz aox vox pox alphax betax gammax pfx vfx afx dpx dax dvx copx cosx  aoy voy poy alphay betay gammay pfy vfy afy dpy day dvy copy cosy aoz voz poz alphaz betaz gammaz pfz vfz afz dpz daz dvz copz cosz
 syms gset next_r p0 p1 p2 p3 p4 inverse_diagonal Vmax maximum_value
 % In general -------------------------------------------------------
@@ -40,7 +38,8 @@ j = diag([j1 j2 j3]);
 w = transpose([p q r]); 
 bw = transpose([-q p 0]); 
 Xw = [0 -w(3) w(2) ; w(3) 0 -w(1) ; -w(2) w(1) 0 ] ;
-wm = symsum(om * ((-1)^ i) , i, 1, n); % wrong, right it after finishing;
+om = transpose([wr1 wr2 wr3])
+wm = -om1 + om2 -om3 + om4 % wrong, right it after finishing;
 bx= norm (vabx)
 by= norm (vaby)
 bz= norm (vabz)
@@ -214,9 +213,23 @@ gset= [gx; gy; gz];
 %}
 
 %---Random waypoints
+%p =  floor((rand (8,3))*100);
+p1 = [0 0 0]
+p2 = [1 1 1]
+p3 = [2 4 5]
+p4 = [4 5 6]
+p5 = [3 5 6]
+p6 = [3 8 6]
+p7 = [3 8 8]
+p8 = [5 8 8]
 
-p =  floor((rand (15,3))*100);
-plot3(p(:,1),p(:,2),p(:,3),'o')
+p10 = [5 8 10]
+p11 = [5 8 12]
+p12 = [5 10 12]
+p13 = [8 10 12]
+
+p = [p1;p2;p3;p4;p5;p6;p7;p8;p9;p10;p11;p12;p13;]
+
     dx = sym('dx',[3 1])
 
 %-------------------- Vmax
@@ -228,7 +241,7 @@ Vmax = 10;
 syms tgo 
 % distant measurement---------------
 i = 0;
-for n = 2:15
+for n = 2:8
     i = i+1;
     d(i) = norm (p(n,:) - p(n-1,:));
     tgo = d / Vmax
@@ -286,7 +299,7 @@ gammay(i) = ((1/tf^5) * (60*tf^2*dpy(i)-24*tf^3*dvy(i)+3*tf^4*day(i)));
 
 dyx(i) = [((alphay(i)/120) * tf^5) + ((betay(i)/24) * tf^4) + ((gammay(i)/6) * tf^3) + ((aoy(i)/2)*tf^2) + (voy(i)*tf) + poy(i)];
  dyv(i) = [((alphay(i)/24) * tf^4) + ((betay(i)/6) * tf^3) + ((gammay(i)/2) * tf^2) + (aoy(i)*tf) + voy(i)];
- dyz(i) =  [((alphay(i)/6) * tf^3) + ((betay(i)/2) * tf^2) + ((gammay(i)) * tf) + aoy(i)];
+ dya(i) =  [((alphay(i)/6) * tf^3) + ((betay(i)/2) * tf^2) + ((gammay(i)) * tf) + aoy(i)];
 
 
 %gy(i) = gammay(i)^2 + betay(i)*gammay(i)*tf + (1/3)*betay(i)^2*tf^2+(1/3)*alphay(i)*gammay(i)*tf^2+(1/4)*alphay(i)*betay(i)*tf^3+(1/20)*alphay(i)^2*tf^4
@@ -312,10 +325,15 @@ dzv(i) =    [((alphaz(i)/24) * tf^4) + ((betaz(i)/6) * tf^3) + ((gammaz(i)/2) * 
 %gz(i) = gammaz(i)^2 + betaz(i)*gammaz(i)*tf + (1/3)*betaz(i)^2*tf^2+(1/3)*alphaz(i)*gammaz(i)*tf^2+(1/4)*alphaz(i)*betaz(i)*tf^3+(1/20)*alphaz(i)^2*tf^4
 
 next_r(i,1:3) = [dxx(i) dyx(i) dzx(i)]
-next_v(i,1:3) = [dxv;dyv;dzv]
-next_a(i,1:3) = [dxa;dya;dza]
+next_v(i,1:3) = [dxv(i) dyv(i) dzv(i)];
+next_a(i,1:3) = [dxa(i) dya(i) dza(i)];
 %plot3(next_r,'o')
+figure(1)
+plot3(p(:,1),p(:,2),p(:,3),'-')
+figure(2)
+ plot3(next_r(:,1),next_r(:,2),next_r(:,3),'-')
+ 
 %gset= [gx; gy; gz];
    end
 %p =  floor((rand (15,3))*100);
-% plot3(p(:,1),p(:,2),p(:,3),'o')
+
